@@ -3,86 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black/White Display</title>
+    <title>Black Screen Fullscreen</title>
     <style>
-        /* Estilos básicos para eliminar márgenes y scroll */
+        /* Fondo negro absoluto desde el inicio */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            /* Inicia en NEGRO por defecto */
-            background-color: #000000; 
-            cursor: none; /* Oculta el cursor para una experiencia limpia */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.2s ease;
+            background-color: #000000;
+            cursor: none; /* El cursor desaparece para no molestar */
         }
 
-        /* Mostrar cursor solo si se mueve el ratón */
-        body.show-cursor {
-            cursor: default;
-        }
-
-        /* Instrucciones discretas que desaparecen */
-        #info {
-            color: #555;
-            font-family: sans-serif;
-            font-size: 0.8rem;
-            user-select: none;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        body:hover #info {
-            opacity: 1;
-        }
+        /* Si prefieres ver el cursor al moverlo, podemos añadir lógica luego, 
+           por ahora lo dejamos oculto para limpieza total. */
     </style>
 </head>
-<body onclick="toggleColor()" id="bg">
-
-    <div id="info">Haz clic para cambiar / 'F' para Fullscreen</div>
+<body onclick="toggleFullscreen()">
 
     <script>
-        const body = document.getElementById('bg');
-        let isBlack = true;
-
-        // Cambiar entre Blanco y Negro
-        function toggleColor() {
-            if (isBlack) {
-                body.style.backgroundColor = "#ffffff";
-            } else {
-                body.style.backgroundColor = "#000000";
-            }
-            isBlack = !isBlack;
-        }
-
-        // Atajos de teclado
-        document.addEventListener('keydown', (e) => {
-            // Tecla Espacio o Enter para cambiar color
-            if (e.code === 'Space' || e.code === 'Enter') {
-                toggleColor();
-            }
-            // Tecla 'F' para solicitar Pantalla Completa
-            if (e.key.toLowerCase() === 'f') {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen();
-                } else {
+        function toggleFullscreen() {
+            // Si NO está en pantalla completa, entra
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen()
+                    .catch(err => {
+                        console.error(`Error al intentar entrar en fullscreen: ${err.message}`);
+                    });
+            } 
+            // Si YA está en pantalla completa, sale
+            else {
+                if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
             }
-        });
+        }
 
-        // Mostrar el cursor brevemente cuando se mueve
-        let timeout;
-        document.addEventListener('mousemove', () => {
-            document.body.classList.add('show-cursor');
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                document.body.classList.remove('show-cursor');
-            }, 2000);
+        // Permitir que la tecla 'Esc' funcione normalmente (comportamiento nativo)
+        // y añadir 'F' como alternativa
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'f') {
+                toggleFullscreen();
+            }
         });
     </script>
 </body>
