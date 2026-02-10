@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Black Screen Fullscreen</title>
     <style>
-        /* Fondo negro absoluto desde el inicio */
+        /* Fondo negro absoluto */
         body, html {
             margin: 0;
             padding: 0;
@@ -13,34 +13,28 @@
             height: 100%;
             overflow: hidden;
             background-color: #000000;
-            cursor: none; /* El cursor desaparece para no molestar */
+            /* Se eliminó 'cursor: none' para que el puntero sea visible */
+            cursor: default; 
         }
-
-        /* Si prefieres ver el cursor al moverlo, podemos añadir lógica luego, 
-           por ahora lo dejamos oculto para limpieza total. */
     </style>
 </head>
 <body onclick="toggleFullscreen()">
 
     <script>
         function toggleFullscreen() {
-            // Si NO está en pantalla completa, entra
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen()
                     .catch(err => {
-                        console.error(`Error al intentar entrar en fullscreen: ${err.message}`);
+                        console.error(`Error: ${err.message}`);
                     });
-            } 
-            // Si YA está en pantalla completa, sale
-            else {
+            } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
             }
         }
 
-        // Permitir que la tecla 'Esc' funcione normalmente (comportamiento nativo)
-        // y añadir 'F' como alternativa
+        // Atajo opcional con la tecla 'F'
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 'f') {
                 toggleFullscreen();
